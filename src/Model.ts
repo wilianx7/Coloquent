@@ -100,6 +100,13 @@ export abstract class Model
         return new Builder(this.constructor);
     }
 
+    /**
+     * Clone the model into a new, non-existing instance.
+     */
+    public replicate() {
+        return <this> (new (<any> this.constructor));
+    }
+
     public static get(page?: number): Promise<PluralResponse>
     {
         return <Promise<PluralResponse>> new Builder(this)
@@ -262,7 +269,7 @@ export abstract class Model
      */
     public fresh(): Promise<this | null | undefined>
     {
-        let model = <this> (new (<any> this.constructor));
+        let model = this.replicate();
         let builder = model.query();
 
         for (let key in this.relations.toArray()){
